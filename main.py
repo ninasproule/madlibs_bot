@@ -9,19 +9,35 @@ templates = {"The Babysitter":the_babysitter, "The Miner":the_miner, "Wedding Vo
 
 result_madlib = ""
 
-title, active_template = random.choice(list(templates.items()))
-print("You Got MadLib: " + title)
 
-for word in active_template.split():
-    if word.startswith("<"):
-        user_word = input("Give me a(n) " + word[1:word.find(">")].upper() + ". ")
-        result_madlib += user_word
-        if word.find(">") < len(word):
-            result_madlib += word[word.find(">") + 1:] #for  punctuation and such immediately after the input word
-        result_madlib += " "
-    else:
-        result_madlib += word
-        result_madlib += " "
+make_or_play = input("Press 1 to make your own madlib. Press 2 to play a random madlib.")
+while make_or_play!="1" and make_or_play!="2":
+    print("Invalid choice.")
+    make_or_play = input("Press 1 to make your own madlib. Press 2 to play a random madlib.")
+
+if make_or_play == "2": #"Play random" option
+    title, active_template = random.choice(list(templates.items()))
+    print("You Got MadLib: " + title)
+
+    for word in active_template.split():
+        if word.startswith("<"):
+            user_word = input("Give me a(n) " + word[1:word.find(">")].upper() + ". ")
+            result_madlib += user_word
+            if word.find(">") < len(word):
+                result_madlib += word[word.find(">") + 1:] #for  punctuation and such immediately after the input word
+            result_madlib += " "
+        else:
+            result_madlib += word
+            result_madlib += " "
 
 
-print(title + ": " + result_madlib)
+    print(title + ": " + result_madlib)
+
+if make_or_play == "1": #"Make your own" option
+    print("To make your own madlib, type a story. Wherever you want the player to enter a word, put the type of word inside <>, like <NOUN> or <ADJECTIVE>.")
+    #example = input("Do you want to see an example? (y/n)")
+    new_template = input()
+    new_title = input("What would you like to title this madlib? ")
+    templates[new_title] = new_template
+
+    print(templates.keys())
