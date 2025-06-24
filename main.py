@@ -1,5 +1,18 @@
 
+template = "The boys can watch an hour of <adjective> television before turning off the <pluralnoun> in their room. Make sure they do not watch any violent <pluralnoun> or adult <pluralnoun>. If there are any phone <pluralnoun>, do not identify yourself as the <noun>-sitter. Take a message. Write it <adverb> on the <noun> provided."
 
 
-template = "The boys can watch an hour of <adjective> television before turning off the <plural noun> in their room. Make sure they do not watch any violent <plural noun> or adult <plural noun>. If there are any phone <plural noun>, do not identify yourself as the <noun>-sitter. Take a message. Write it <adverb> on the <noun> provided."
+madlib = ""
 
+for word in template.split():
+    if word.startswith("<"):
+        user_word = input("Enter a(n) " + word[1:word.find(">")]+ ". ")
+        madlib += user_word
+        if word.find(">") < len(word):
+            madlib += word[word.find(">")+1:]
+        madlib += " "
+    else:
+        madlib += word
+        madlib += " "
+
+print(madlib)
