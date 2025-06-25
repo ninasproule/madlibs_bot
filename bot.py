@@ -1,6 +1,7 @@
 # python bot.py
 import os
 import discord
+import random
 import asyncio
 import json
 from discord.ext import commands
@@ -39,13 +40,10 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 @bot.event
 async def on_ready():
     print(f'{bot.user} has connected to Discord!')
-    print(templates.keys())
 
 @bot.command()
 async def ping(ctx):
     await ctx.send('Pong!')
-
-
 
 
 @bot.command()
@@ -74,8 +72,6 @@ async def new(ctx):
 
         templates[new_title] = new_template
         jsonWrite()
-        print(templates.keys())
-
 
 
     #await message.add_reaction("1️⃣")
@@ -83,6 +79,61 @@ async def new(ctx):
 
 #1️⃣
 # 2️⃣
+
+
+
+@bot.command()
+async def play(ctx, *args):
+    if len(args) == 0: #play random madlib
+        result_madlib = ""
+        title, active_template = random.choice(list(templates.items()))
+        await ctx.send("You Got MadLib: " + title)
+
+        for word in active_template.split():
+            if word.startswith("<"):
+                await ctx.send("Give me a(n) " + word[1:word.find(">")].upper() + ". ")
+                user_input = await bot.wait_for('message')  # , check=check())
+                user_word = str(user_input.content)
+
+                result_madlib += user_word
+                if word.find(">") < len(word):
+                    result_madlib += word[
+                                     word.find(">") + 1:]  # for  punctuation and such immediately after the input word
+                result_madlib += " "
+            else:
+                result_madlib += word
+                result_madlib += " "
+
+        await ctx.send(title + ":\n" + result_madlib)
+
+    elif len(args) < 1:
+        await ctx.send("Please enter the full madlib title in quotes, like this:\n`$play \"The Babysitter\"`")
+
+
+    else: #play specific madlib
+        if args[0] not in templates.keys():
+            await ctx.send("Please enter a valid madlib title.")
+
+        else:
+            result_madlib = ""
+            title = args[0]
+            active_template = templates[title]
+
+            for word in active_template.split():
+                if word.startswith("<"):
+                    await ctx.send("Give me a(n) " + word[1:word.find(">")].upper() + ". ")
+                    user_input = await bot.wait_for('message')  # , check=check())
+                    user_word = str(user_input.content)
+
+                    result_madlib += user_word
+                    if word.find(">") < len(word):
+                        result_madlib += word[word.find(">") + 1:]  # for  punctuation and such immediately after the input word
+                    result_madlib += " "
+                else:
+                    result_madlib += word
+                    result_madlib += " "
+
+            await ctx.send(title + ":\n" + result_madlib)
 
 
 
