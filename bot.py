@@ -54,18 +54,28 @@ async def new(ctx):
     await ctx.send("To make your own madlib, type a story. Wherever you want the player to enter a word, put the type of word inside <>, like <NOUN> or <ADJECTIVE>.")
     await ctx.send("Type 1 to make your own madlib, Type 2 to see an example.")
 
-    message = await bot.wait_for('message')#, check=check())
+    message = await bot.wait_for('message', check=check)
 
     if message.content.startswith("1"):  # make new madlib
         await message.channel.send("Go ahead and type your madlib! All in one message, please.")
-        madlib = await bot.wait_for('message')#, check=check)
+        madlib = await bot.wait_for('message', check=check)
         new_template = str(madlib.content)
 
         #await ctx.send("Here is your madlib:\n" + madlib.content + "\nIs this correct?")
         #confirm = await bot.wait_for('message', check=check())
 
+        """def check(reaction, user):
+            return user == message.author and str(reaction.emoji) == '👍'
+
+        try:
+            reaction, user = await client.wait_for('reaction_add', timeout=60.0, check=check)
+        except asyncio.TimeoutError:
+            await channel.send('👎')
+        else:
+            await channel.send('👍')"""
+
         await ctx.send("What would you like to title this madlib?")
-        title = await bot.wait_for('message')#, check=check())
+        title = await bot.wait_for('message', check=check)
         new_title = str(title.content)
 
         await ctx.send("Madlib registered!")
@@ -81,18 +91,20 @@ async def new(ctx):
 # 2️⃣
 
 
-
 @bot.command()
 async def play(ctx, *args):
-    if len(args) == 0: #play random madlib
+    async def playMadlib(title):
+        def check(m):
+            return m.content is not None and m.author == ctx.author
+
         result_madlib = ""
-        title, active_template = random.choice(list(templates.items()))
+        active_template = templates[title]
         await ctx.send("You Got MadLib: " + title)
 
         for word in active_template.split():
             if word.startswith("<"):
                 await ctx.send("Give me a(n) " + word[1:word.find(">")].upper() + ". ")
-                user_input = await bot.wait_for('message')  # , check=check())
+                user_input = await bot.wait_for('message', check=check)
                 user_word = str(user_input.content)
 
                 result_madlib += user_word
@@ -106,34 +118,18 @@ async def play(ctx, *args):
 
         await ctx.send(title + ":\n" + result_madlib)
 
-    elif len(args) < 1:
-        await ctx.send("Please enter the full madlib title in quotes, like this:\n`$play \"The Babysitter\"`")
+    if len(args) == 0: #play random madlib
+        await playMadlib(random.choice(list(templates.keys())))
 
+    elif len(args) < 1: #too many words TODO: make it accept that
+        await ctx.send("Please enter the full madlib title in quotes, like this:\n`$play \"The Babysitter\"`")
 
     else: #play specific madlib
         if args[0] not in templates.keys():
-            await ctx.send("Please enter a valid madlib title.")
+            await ctx.send("Please enter a valid madlib title. Use `$list` to see all of the available madlibs.")
 
         else:
-            result_madlib = ""
-            title = args[0]
-            active_template = templates[title]
-
-            for word in active_template.split():
-                if word.startswith("<"):
-                    await ctx.send("Give me a(n) " + word[1:word.find(">")].upper() + ". ")
-                    user_input = await bot.wait_for('message')  # , check=check())
-                    user_word = str(user_input.content)
-
-                    result_madlib += user_word
-                    if word.find(">") < len(word):
-                        result_madlib += word[word.find(">") + 1:]  # for  punctuation and such immediately after the input word
-                    result_madlib += " "
-                else:
-                    result_madlib += word
-                    result_madlib += " "
-
-            await ctx.send(title + ":\n" + result_madlib)
+            await playMadlib(args[0])
 
 
 
