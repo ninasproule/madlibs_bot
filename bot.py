@@ -2,11 +2,10 @@
 import os
 import discord
 import random
-import asyncio
 import json
 from discord.ext import commands
 from dotenv import load_dotenv
-from discord.interactions import InteractionResponse
+
 
 the_babysitter = "The boys can watch an hour of <adjective> television before turning off the <plural-noun> in their room. Make sure they do not watch any violent <plural-noun> or adult <plural-noun>. If there are any phone <plural-noun>, do not identify yourself as the <noun>-sitter. Take a message. Write it <adverb> on the <noun> provided."
 the_miner = "Once upon a time, a miner named Thabo worked in a big <PLACE>. Every day, he woke up early to <VERB> for shiny diamonds deep in the ground. Thabo’s helmet was <ADJECTIVE>, and his boots were covered in dirt. He used his pickaxe to <VERB> through the tough rock, <CONJUNCTION> he never gave up. One day, Thabo found a diamond that sparkled so brightly it made the <PLACE> look magical. He was excited <CONJUNCTION> a little nervous because it was the biggest diamond he had ever seen. He placed the diamond in his bag <ADVERB> so it wouldn’t get scratched. When Thabo returned to the surface, he shared the news with his team, <CONJUNCTION> everyone cheered. They knew their hard work had paid off, and Thabo felt <ADJECTIVE> as he walked home."
@@ -82,14 +81,11 @@ async def new(ctx):
 
         templates[new_title] = new_template
         jsonWrite()
-
-
     #await message.add_reaction("1️⃣")
     #await message.add_reaction("2️⃣")
 
 #1️⃣
 # 2️⃣
-
 
 @bot.command()
 async def play(ctx, *args):
@@ -103,7 +99,7 @@ async def play(ctx, *args):
 
         for word in active_template.split():
             if word.startswith("<"):
-                await ctx.send("Give me a(n) " + word[1:word.find(">")].upper() + ". ")
+                await ctx.send(str(ctx.author) + " , give me a(n) " + word[1:word.find(">")].upper() + ". ")
                 user_input = await bot.wait_for('message', check=check)
                 user_word = str(user_input.content)
 
@@ -125,15 +121,15 @@ async def play(ctx, *args):
         await ctx.send("Please enter the full madlib title in quotes, like this:\n`$play \"The Babysitter\"`")
 
     else: #play specific madlib
-        if args[0] not in templates.keys():
+        if args[0] not in templates.keys(): #invalid title
             await ctx.send("Please enter a valid madlib title. Use `$list` to see all of the available madlibs.")
 
-        else:
+        else: #valid title
             await playMadlib(args[0])
 
 
-@bot.command()
-async def list(ctx):
+@bot.command(name='list') #list titles of all madlibs
+async def list_titles(ctx):
     titles = [str(key) for key in templates.keys()]
     await ctx.send("__Available madlibs:__\n"+", ".join(titles))
 
