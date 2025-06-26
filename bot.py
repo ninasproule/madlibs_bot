@@ -132,6 +132,11 @@ async def play(ctx, *args):
             await playMadlib(args[0])
 
 
+@bot.command()
+async def list(ctx):
+    titles = [str(key) for key in templates.keys()]
+    await ctx.send("__Available madlibs:__\n"+", ".join(titles))
+
 
 
 bot.run(TOKEN)
