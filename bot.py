@@ -1,8 +1,12 @@
 # python bot.py
 import os
+
 import discord
 import random
+import asyncio
 import json
+
+from discord import Reaction, Member, User
 from discord.ext import commands
 from dotenv import load_dotenv
 
@@ -45,48 +49,65 @@ async def ping(ctx):
     await ctx.send('Pong!')
 
 
-@bot.command()
-async def new(ctx):
+#TODO: allow <Multiple Words>
+@bot.command(name="new")
+async def new_madlib(ctx):
     def check(m):
         return m.content is not None and m.author == ctx.author
+    def checkReact(reaction, user):
+        return user == ctx.author and (str(reaction) == "✅" or str(reaction) == "❌")
+    def checkOneTwo(reaction, user):
+        return user == ctx.author and (str(reaction) == "1️⃣" or str(reaction) == "2️⃣")
 
     await ctx.send("To make your own madlib, type a story. Wherever you want the player to enter a word, put the type of word inside <>, like <NOUN> or <ADJECTIVE>.")
-    await ctx.send("Type 1 to make your own madlib, Type 2 to see an example.")
+    selection = await ctx.send("Type 1 to make your own madlib, Type 2 to see an example.")
+
 
     message = await bot.wait_for('message', check=check)
 
     if message.content.startswith("1"):  # make new madlib
-        await message.channel.send("Go ahead and type your madlib! All in one message, please.")
-        madlib = await bot.wait_for('message', check=check)
-        new_template = str(madlib.content)
+        confirmed = False
 
-        #await ctx.send("Here is your madlib:\n" + madlib.content + "\nIs this correct?")
-        #confirm = await bot.wait_for('message', check=check())
+        while confirmed == False:
+            await message.channel.send("Go ahead and type your madlib!")
+            madlib = await bot.wait_for('message', check=check)
+            new_template = str(madlib.content)
 
-        """def check(reaction, user):
-            return user == message.author and str(reaction.emoji) == '👍'
+            await ctx.send("Here is your madlib:\n\n" + madlib.content)
+            confirmation = await ctx.send("Is this correct?")
+            await confirmation.add_reaction("✅")
+            await confirmation.add_reaction("❌")
 
-        try:
-            reaction, user = await client.wait_for('reaction_add', timeout=60.0, check=check)
-        except asyncio.TimeoutError:
-            await channel.send('👎')
-        else:
-            await channel.send('👍')"""
+            reaction = await bot.wait_for("reaction_add", check=checkReact)
+            if str(reaction[0]) =="✅":
+                confirmed = True
+            elif str(reaction[0]) == "❌":
+                confirmed = False
 
-        await ctx.send("What would you like to title this madlib?")
-        title = await bot.wait_for('message', check=check)
-        new_title = str(title.content)
 
-        await ctx.send("Madlib registered!")
+        if confirmed == True:
+            await ctx.send("What would you like to title this madlib?")
+            title = await bot.wait_for('message', check=check)
+            new_title = str(title.content)
 
-        templates[new_title] = new_template
-        jsonWrite()
+            await ctx.send("Madlib registered!")
+
+            templates[new_title] = new_template
+            jsonWrite()
+
+    if message.content.startswith("2"):
+        await ctx.send("example")
+        await new_madlib(ctx)
+
+    #TODO: example when enter 2
+    #TODO: change all options to emojis
     #await message.add_reaction("1️⃣")
     #await message.add_reaction("2️⃣")
 
 #1️⃣
 # 2️⃣
 
+#TODO: ignore case of title
 @bot.command()
 async def play(ctx, *args):
     async def playMadlib(title):
@@ -99,7 +120,7 @@ async def play(ctx, *args):
 
         for word in active_template.split():
             if word.startswith("<"):
-                await ctx.send(str(ctx.author) + " , give me a(n) " + word[1:word.find(">")].upper() + ". ")
+                await ctx.send(str(ctx.author.mention) + ": give me a(n) " + word[1:word.find(">")].upper() + ". ")
                 user_input = await bot.wait_for('message', check=check)
                 user_word = str(user_input.content)
 
