@@ -59,17 +59,23 @@ async def new_madlib(ctx):
     def checkOneTwo(reaction, user):
         return user == ctx.author and (str(reaction) == "1️⃣" or str(reaction) == "2️⃣")
 
-    await ctx.send("To make your own madlib, type a story. Wherever you want the player to enter a word, put the type of word inside <>, like <NOUN> or <ADJECTIVE>.")
-    selection = await ctx.send("Type 1 to make your own madlib, Type 2 to see an example.")
+    selection = await ctx.send("Select 1 to make your own madlib, 2 to view instructions.")
+    await selection.add_reaction("1️⃣")
+    await selection.add_reaction("2️⃣")
+
+    instructed = False
+    reaction = await bot.wait_for("reaction_add", check=checkOneTwo)
+    if str(reaction[0]) == "1️⃣":
+        instructed = True
+    elif str(reaction[0]) == "2️⃣":
+        instructed = False
 
 
-    message = await bot.wait_for('message', check=check)
-
-    if message.content.startswith("1"):  # make new madlib
+    if instructed:  # make new madlib
         confirmed = False
 
         while confirmed == False:
-            await message.channel.send("Go ahead and type your madlib!")
+            await ctx.send("Go ahead and type your madlib!")
             madlib = await bot.wait_for('message', check=check)
             new_template = str(madlib.content)
 
@@ -95,10 +101,12 @@ async def new_madlib(ctx):
             templates[new_title] = new_template
             jsonWrite()
 
-    if message.content.startswith("2"):
-        await ctx.send("example")
+    elif not instructed: #view instructions
+        await ctx.send("To make your own madlib, type a story. Wherever you want the player to enter a word, put the type of word inside <>, like <NOUN> or <ADJECTIVE>.")
+        #example
         await new_madlib(ctx)
 
+    #TODO: cancel option
     #TODO: example when enter 2
     #TODO: change all options to emojis
     #await message.add_reaction("1️⃣")
