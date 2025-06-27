@@ -1,11 +1,9 @@
 # python bot.py
 import os
-
 import discord
 import random
 import asyncio
 import json
-
 from discord import Reaction, Member, User
 from discord.ext import commands
 from dotenv import load_dotenv
@@ -34,11 +32,10 @@ templates = jsonRead()
 
 intents = discord.Intents.default()
 intents.message_content = True
-
 bot = commands.Bot(command_prefix='$', intents=intents)
-
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
+
 
 @bot.event
 async def on_ready():
@@ -74,7 +71,7 @@ async def new_madlib(ctx):
     if instructed:  # make new madlib
         confirmed = False
 
-        while confirmed == False:
+        while not confirmed:
             await ctx.send("Go ahead and type your madlib!")
             madlib = await bot.wait_for('message', check=check)
             new_template = str(madlib.content)
@@ -91,7 +88,7 @@ async def new_madlib(ctx):
                 confirmed = False
 
 
-        if confirmed == True:
+        if confirmed:
             await ctx.send("What would you like to title this madlib?")
             title = await bot.wait_for('message', check=check)
             new_title = str(title.content)
@@ -109,12 +106,8 @@ async def new_madlib(ctx):
     #TODO: cancel option
     #TODO: example when enter 2
     #TODO: change all options to emojis
-    #await message.add_reaction("1️⃣")
-    #await message.add_reaction("2️⃣")
 
-#1️⃣
-# 2️⃣
-
+#TODO: result in embed
 #TODO: ignore case of title
 @bot.command()
 async def play(ctx, *args):
@@ -141,7 +134,8 @@ async def play(ctx, *args):
                 result_madlib += word
                 result_madlib += " "
 
-        await ctx.send(title + ":\n" + result_madlib)
+        embed = discord.Embed(title=title, description=result_madlib)
+        await ctx.send(embed=embed)
 
     if len(args) == 0: #play random madlib
         await playMadlib(random.choice(list(templates.keys())))
@@ -156,7 +150,7 @@ async def play(ctx, *args):
         else: #valid title
             await playMadlib(args[0])
 
-
+#TODO: scrolling embed list
 @bot.command(name='list') #list titles of all madlibs
 async def list_titles(ctx):
     titles = [str(key) for key in templates.keys()]
