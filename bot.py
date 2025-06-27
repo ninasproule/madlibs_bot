@@ -134,7 +134,7 @@ async def play(ctx, *args):
                 result_madlib += word
                 result_madlib += " "
 
-        embed = discord.Embed(title=title, description=result_madlib)
+        embed = discord.Embed(title=title, description=result_madlib, colour=discord.Colour.blue())
         await ctx.send(embed=embed)
 
     if len(args) == 0: #play random madlib
@@ -154,7 +154,39 @@ async def play(ctx, *args):
 @bot.command(name='list') #list titles of all madlibs
 async def list_titles(ctx):
     titles = [str(key) for key in templates.keys()]
-    await ctx.send("__Available madlibs:__\n"+", ".join(titles))
+    titles.sort()
+
+    def slice_per(source, step):
+        return [source[i::step] for i in range(step)]
+    pages = slice_per(titles, 3)
+    def checkReact(reaction, user):
+        return (str(reaction) == "⬅️" or str(reaction) == "➡️")
+
+    async def listEmbed(pagenum):
+        titles = pages[pagenum]
+        embed = discord.Embed(title="Available Madlibs:", description="\n".join(titles), colour=discord.Colour.blue())
+        embed.set_footer(text="Page " + str(pagenum+1) + "/" + str(len(pages)))
+
+        async def flipPage(pagenum):
+            reaction = await bot.wait_for("reaction_add", check=checkReact)
+            if (str(reaction[0]) == "⬅️" and pagenum == 0) or (str(reaction[0]) == "➡️" and pagenum == len(pages)-1):
+                await flipPage(pagenum)
+
+            elif str(reaction[0]) == "⬅️":
+                await list.delete()
+                await listEmbed(pagenum-1)
+
+            elif str(reaction[0]) == "➡️":
+                await list.delete()
+                await listEmbed(pagenum+1)
+
+        list = await ctx.send(embed=embed)
+        await list.add_reaction("⬅️")
+        await list.add_reaction("➡️")
+        await flipPage(pagenum)
+
+    await listEmbed(0)
+
 
 
 
