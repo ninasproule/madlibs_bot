@@ -100,14 +100,13 @@ async def new_madlib(ctx):
 
     elif not instructed: #view instructions
         await ctx.send("To make your own madlib, type a story. Wherever you want the player to enter a word, put the type of word inside <>, like <NOUN> or <ADJECTIVE>.")
-        #example
+        await ctx.send("Here's an example!\nOnce upon a time, there was a <noun>. It was very <adjective> and always <past-tense-verb> <adverb>")
         await new_madlib(ctx)
 
     #TODO: cancel option
-    #TODO: example when enter 2
-    #TODO: change all options to emojis
 
-#TODO: result in embed
+#TODO: clean up past messages?
+
 #TODO: ignore case of title
 @bot.command()
 async def play(ctx, *args):
@@ -150,7 +149,7 @@ async def play(ctx, *args):
         else: #valid title
             await playMadlib(args[0])
 
-#TODO: scrolling embed list
+
 @bot.command(name='list') #list titles of all madlibs
 async def list_titles(ctx):
     titles = [str(key) for key in templates.keys()]
@@ -160,7 +159,7 @@ async def list_titles(ctx):
         return [source[i::step] for i in range(step)]
     pages = slice_per(titles, 3)
     def checkReact(reaction, user):
-        return (str(reaction) == "⬅️" or str(reaction) == "➡️")
+        return user != discord.Member.bot and (str(reaction) == "⬅️" or str(reaction) == "➡️")
 
     async def listEmbed(pagenum):
         titles = pages[pagenum]
