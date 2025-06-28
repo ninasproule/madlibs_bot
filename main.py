@@ -1,6 +1,6 @@
 #Nina Sproule 2025
-import random
 import json
+import random
 
 the_babysitter = "The boys can watch an hour of <adjective> television before turning off the <plural-noun> in their room. Make sure they do not watch any violent <plural-noun> or adult <plural-noun>. If there are any phone <plural-noun>, do not identify yourself as the <noun>-sitter. Take a message. Write it <adverb> on the <noun> provided."
 the_miner = "Once upon a time, a miner named Thabo worked in a big <PLACE>. Every day, he woke up early to <VERB> for shiny diamonds deep in the ground. Thabo’s helmet was <ADJECTIVE>, and his boots were covered in dirt. He used his pickaxe to <VERB> through the tough rock, <CONJUNCTION> he never gave up. One day, Thabo found a diamond that sparkled so brightly it made the <PLACE> look magical. He was excited <CONJUNCTION> a little nervous because it was the biggest diamond he had ever seen. He placed the diamond in his bag <ADVERB> so it wouldn’t get scratched. When Thabo returned to the surface, he shared the news with his team, <CONJUNCTION> everyone cheered. They knew their hard work had paid off, and Thabo felt <ADJECTIVE> as he walked home."
