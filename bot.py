@@ -28,6 +28,8 @@ async def on_ready():
 
 @bot.command(name="new")
 async def new_madlib(ctx):
+    """user create new madlib template"""
+
     def check(m):
         return m.content is not None and m.author == ctx.author
     def checkReact(reaction, user):
@@ -75,7 +77,7 @@ async def new_madlib(ctx):
             await ctx.send("Madlib registered!")
 
             TEMPLATES[new_title] = new_template
-            save_data()
+            save_data(TEMPLATES)
 
     #view instructions
     elif not instructed:
@@ -89,6 +91,7 @@ async def new_madlib(ctx):
 @bot.command()
 async def play(ctx, *args):
     """play a madlib- random if no args given, otherwise, args are the title of madlib to play"""
+
     async def playMadlib(title):
         def check(m):
             return m.content is not None and m.author == ctx.author
@@ -111,26 +114,24 @@ async def play(ctx, *args):
         await ctx.send(embed=embed)
 
     #play random madlib
-    if len(args) == 0: 
+    if len(args) == 0:
         await playMadlib(random.choice(list(TEMPLATES.keys())))
+        return
 
-    #too many words 
-    #TODO: make it accept that
-    elif len(args) < 1: 
-        await ctx.send("Please enter the full madlib title in quotes, like this:\n`$play \"The Babysitter\"`")
+    args = " ".join(args).lower()
 
     #play specific madlib
-    else: 
-        if args[0] not in TEMPLATES.keys(): #invalid title
-            await ctx.send("Please enter a valid madlib title. Use `$list` to see all of the available madlibs.")
+    if not (args in TEMPLATES.keys()):
+        await ctx.send("Please enter a valid madlib title. Use `$list` to see all of the available madlibs.")
 
-        else: #valid title
-            await playMadlib(args[0])
+    else:
+        await playMadlib(args)
 
-#TODO: maybe update embed instead of full delete and redo?
+
 @bot.command(name='list')
 async def list_titles(ctx):
     """list titles of all madlibs"""
+
     titles = [str(key) for key in TEMPLATES.keys()]
     titles.sort()
 
