@@ -10,11 +10,11 @@ templates = {"The Babysitter":the_babysitter,
              "The Miner":the_miner,
              "Wedding Vows":wedding_vows}
 def jsonWrite():
-    with open("madlib_temps.json", mode="w", encoding="utf-8") as write_file:
+    with open("madlibs.json", mode="w", encoding="utf-8") as write_file:
         json.dump(templates, write_file)
 
 def jsonRead():
-    with open("madlib_temps.json", mode="r", encoding="utf-8") as read_file:
+    with open("madlibs.json", mode="r", encoding="utf-8") as read_file:
         saved_madlibs = json.load(read_file)
     return saved_madlibs
 

@@ -1,12 +1,11 @@
 import json
 
-from default_templates import TEMPLATES
+from default_templates import DEFAULT_TEMPLATES
 
-def jsonWrite():
-    with open("madlib_temps.json", mode="w", encoding="utf-8") as write_file:
-        json.dump(TEMPLATES, write_file)
+def save_data():
+    with open("madlibs.json", mode="w", encoding="utf-8") as write_file:
+        json.dump(DEFAULT_TEMPLATES, write_file)
 
-def jsonRead():
-    with open("madlib_temps.json", mode="r", encoding="utf-8") as read_file:
-        saved_madlibs = json.load(read_file)
-    return saved_madlibs
+def get_data():
+    with open("madlibs.json", mode="r", encoding="utf-8") as read_file:
+        return json.load(read_file)

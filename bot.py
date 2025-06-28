@@ -7,11 +7,11 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 
-from default_templates import TEMPLATES
-from storage import jsonRead, jsonWrite
+from default_templates import DEFAULT_TEMPLATES
+from storage import get_data, save_data
 
 
-TEMPLATES = jsonRead()
+
 
 
 intents = discord.Intents.default()
@@ -79,8 +79,8 @@ async def new_madlib(ctx):
 
             await ctx.send("Madlib registered!")
 
-            TEMPLATES[new_title] = new_template
-            jsonWrite()
+            DEFAULT_TEMPLATES[new_title] = new_template
+            save_data()
 
     elif not instructed: #view instructions
         await ctx.send("To make your own madlib, type a story. Wherever you want the player to enter a word, put the type of word inside <>, like <NOUN> or <ADJECTIVE>.")
@@ -99,7 +99,7 @@ async def play(ctx, *args):
             return m.content is not None and m.author == ctx.author
 
         result_madlib = ""
-        active_template = TEMPLATES[title]
+        active_template = DEFAULT_TEMPLATES[title]
         await ctx.send("You Got MadLib: " + title)
 
         for word in active_template.split():
@@ -121,13 +121,13 @@ async def play(ctx, *args):
         await ctx.send(embed=embed)
 
     if len(args) == 0: #play random madlib
-        await playMadlib(random.choice(list(TEMPLATES.keys())))
+        await playMadlib(random.choice(list(DEFAULT_TEMPLATES.keys())))
 
     elif len(args) < 1: #too many words TODO: make it accept that
         await ctx.send("Please enter the full madlib title in quotes, like this:\n`$play \"The Babysitter\"`")
 
     else: #play specific madlib
-        if args[0] not in TEMPLATES.keys(): #invalid title
+        if args[0] not in DEFAULT_TEMPLATES.keys(): #invalid title
             await ctx.send("Please enter a valid madlib title. Use `$list` to see all of the available madlibs.")
 
         else: #valid title
@@ -136,7 +136,7 @@ async def play(ctx, *args):
 
 @bot.command(name='list') #list titles of all madlibs
 async def list_titles(ctx):
-    titles = [str(key) for key in TEMPLATES.keys()]
+    titles = [str(key) for key in DEFAULT_TEMPLATES.keys()]
     titles.sort()
 
     def slice_per(source, step):
