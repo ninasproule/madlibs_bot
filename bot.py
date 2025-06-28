@@ -1,5 +1,5 @@
-# python bot.py
-import json
+#!/usr/bin/env python3
+
 import os
 import random
 
@@ -7,21 +7,22 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 
-from default_templates import DEFAULT_TEMPLATES
 from storage import get_data, save_data
 
+load_dotenv()
+
 TEMPLATES = get_data()
+TOKEN = os.getenv('DISCORD_TOKEN')
 
 intents = discord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(command_prefix='$', intents=intents)
-load_dotenv()
-TOKEN = os.getenv('DISCORD_TOKEN')
 
 
 @bot.event
 async def on_ready():
     print(f'{bot.user} has connected to Discord!')
+
 
 @bot.command()
 async def ping(ctx):
@@ -49,8 +50,8 @@ async def new_madlib(ctx):
     elif str(reaction[0]) == "2️⃣":
         instructed = False
 
-
-    if instructed:  # make new madlib
+    # make new madlib
+    if instructed:
         confirmed = False
 
         while not confirmed:
@@ -77,7 +78,7 @@ async def new_madlib(ctx):
 
             await ctx.send("Madlib registered!")
 
-            DEFAULT_TEMPLATES[new_title] = new_template
+            TEMPLATES[new_title] = new_template
             save_data()
 
     elif not instructed: #view instructions
@@ -97,7 +98,7 @@ async def play(ctx, *args):
             return m.content is not None and m.author == ctx.author
 
         result_madlib = ""
-        active_template = DEFAULT_TEMPLATES[title]
+        active_template = TEMPLATES[title]
         await ctx.send("You Got MadLib: " + title)
 
         for word in active_template.split():
@@ -119,22 +120,23 @@ async def play(ctx, *args):
         await ctx.send(embed=embed)
 
     if len(args) == 0: #play random madlib
-        await playMadlib(random.choice(list(DEFAULT_TEMPLATES.keys())))
+        await playMadlib(random.choice(list(TEMPLATES.keys())))
 
     elif len(args) < 1: #too many words TODO: make it accept that
         await ctx.send("Please enter the full madlib title in quotes, like this:\n`$play \"The Babysitter\"`")
 
     else: #play specific madlib
-        if args[0] not in DEFAULT_TEMPLATES.keys(): #invalid title
+        if args[0] not in TEMPLATES.keys(): #invalid title
             await ctx.send("Please enter a valid madlib title. Use `$list` to see all of the available madlibs.")
 
         else: #valid title
             await playMadlib(args[0])
 
 
-@bot.command(name='list') #list titles of all madlibs
+@bot.command(name='list')
 async def list_titles(ctx):
-    titles = [str(key) for key in DEFAULT_TEMPLATES.keys()]
+    """list titles of all madlibs"""
+    titles = [str(key) for key in TEMPLATES.keys()]
     titles.sort()
 
     def slice_per(source, step):
@@ -167,8 +169,6 @@ async def list_titles(ctx):
         await flipPage(pagenum)
 
     await listEmbed(0)
-
-
 
 
 bot.run(TOKEN)
