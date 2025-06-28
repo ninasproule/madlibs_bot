@@ -2,6 +2,7 @@
 
 import os
 import random
+from string import capwords
 
 import discord
 from discord.ext import commands
@@ -94,7 +95,7 @@ async def play(ctx, *args):
 
         result_madlib = ""
         active_template = TEMPLATES[title]
-        await ctx.send("You Got MadLib: " + title.capwords())
+        await ctx.send("You Got MadLib: " + capwords(title))
 
         for word in active_template.split():
             if word.startswith("<"):
@@ -111,7 +112,7 @@ async def play(ctx, *args):
                 result_madlib += word
                 result_madlib += " "
 
-        embed = discord.Embed(title=title.capwords(), description=result_madlib, colour=discord.Colour.blue())
+        embed = discord.Embed(title=capwords(title), description=result_madlib, colour=discord.Colour.blue())
         await ctx.send(embed=embed)
 
     #play random madlib
@@ -145,7 +146,7 @@ async def list_titles(ctx):
         return user != discord.Member.bot and (str(reaction) == "⬅️" or str(reaction) == "➡️")
 
     async def listEmbed(pagenum):
-        titles = [title.capwords() for title in pages[pagenum]]
+        titles = [capwords(title) for title in pages[pagenum]]
         embed = discord.Embed(title="Available Madlibs:", description="\n".join(titles), colour=discord.Colour.blue())
         embed.set_footer(text="Page " + str(pagenum+1) + "/" + str(len(pages)))
 
