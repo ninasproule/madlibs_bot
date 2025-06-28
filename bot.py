@@ -2,6 +2,7 @@
 
 import os
 import random
+import re
 from string import capwords
 
 import discord
@@ -25,7 +26,6 @@ async def on_ready():
     print(f'{bot.user} has connected to Discord!')
 
 
-#TODO: allow <Multiple Words>
 @bot.command(name="new")
 async def new_madlib(ctx):
     def check(m):
@@ -35,7 +35,7 @@ async def new_madlib(ctx):
     def checkOneTwo(reaction, user):
         return user == ctx.author and (str(reaction) == "1️⃣" or str(reaction) == "2️⃣")
 
-    selection = await ctx.send("Select 1 to make your own madlib, 2 to view instructions.")
+    selection = await ctx.send("Select `1` to make your own madlib, `2` to view instructions.")
     await selection.add_reaction("1️⃣")
     await selection.add_reaction("2️⃣")
 
@@ -97,20 +97,15 @@ async def play(ctx, *args):
         active_template = TEMPLATES[title]
         await ctx.send("You Got MadLib: " + capwords(title))
 
-        for word in active_template.split():
-            if word.startswith("<"):
-                await ctx.send(str(ctx.author.mention) + ": give me a(n) " + word[1:word.find(">")].upper() + ". ")
+        for chunk in re.split(r'(<.*?>)', active_template):
+            if chunk.startswith("<"):
+                await ctx.send(str(ctx.author.mention) + ": give me a(n) " + chunk.lstrip("<").rstrip(">").upper())
                 user_input = await bot.wait_for('message', check=check)
                 user_word = str(user_input.content)
 
                 result_madlib += user_word
-                if word.find(">") < len(word):
-                    result_madlib += word[
-                                     word.find(">") + 1:]  # for  punctuation and such immediately after the input word
-                result_madlib += " "
             else:
-                result_madlib += word
-                result_madlib += " "
+                result_madlib += chunk
 
         embed = discord.Embed(title=capwords(title), description=result_madlib, colour=discord.Colour.blue())
         await ctx.send(embed=embed)
