@@ -145,7 +145,7 @@ async def list_titles(ctx):
         return user != discord.Member.bot and (str(reaction) == "⬅️" or str(reaction) == "➡️")
 
     async def listEmbed(pagenum):
-        titles = pages[pagenum].capwords()
+        titles = [title.capwords() for title in pages[pagenum]]
         embed = discord.Embed(title="Available Madlibs:", description="\n".join(titles), colour=discord.Colour.blue())
         embed.set_footer(text="Page " + str(pagenum+1) + "/" + str(len(pages)))
 
