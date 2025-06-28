@@ -24,11 +24,6 @@ async def on_ready():
     print(f'{bot.user} has connected to Discord!')
 
 
-@bot.command()
-async def ping(ctx):
-    await ctx.send('Pong!')
-
-
 #TODO: allow <Multiple Words>
 @bot.command(name="new")
 async def new_madlib(ctx):
@@ -74,32 +69,32 @@ async def new_madlib(ctx):
         if confirmed:
             await ctx.send("What would you like to title this madlib?")
             title = await bot.wait_for('message', check=check)
-            new_title = str(title.content)
+            new_title = str(title.content).lower()
 
             await ctx.send("Madlib registered!")
 
             TEMPLATES[new_title] = new_template
             save_data()
 
-    elif not instructed: #view instructions
+    #view instructions
+    elif not instructed:
         await ctx.send("To make your own madlib, type a story. Wherever you want the player to enter a word, put the type of word inside <>, like <NOUN> or <ADJECTIVE>.")
         await ctx.send("Here's an example!\nOnce upon a time, there was a <noun>. It was very <adjective> and always <past-tense-verb> <adverb>")
         await new_madlib(ctx)
 
     #TODO: cancel option
 
-#TODO: clean up past messages?
 
-#TODO: ignore case of title
 @bot.command()
 async def play(ctx, *args):
+    """play a madlib- random if no args given, otherwise, args are the title of madlib to play"""
     async def playMadlib(title):
         def check(m):
             return m.content is not None and m.author == ctx.author
 
         result_madlib = ""
         active_template = TEMPLATES[title]
-        await ctx.send("You Got MadLib: " + title)
+        await ctx.send("You Got MadLib: " + title.capwords())
 
         for word in active_template.split():
             if word.startswith("<"):
@@ -116,23 +111,27 @@ async def play(ctx, *args):
                 result_madlib += word
                 result_madlib += " "
 
-        embed = discord.Embed(title=title, description=result_madlib, colour=discord.Colour.blue())
+        embed = discord.Embed(title=title.capwords(), description=result_madlib, colour=discord.Colour.blue())
         await ctx.send(embed=embed)
 
-    if len(args) == 0: #play random madlib
+    #play random madlib
+    if len(args) == 0: 
         await playMadlib(random.choice(list(TEMPLATES.keys())))
 
-    elif len(args) < 1: #too many words TODO: make it accept that
+    #too many words 
+    #TODO: make it accept that
+    elif len(args) < 1: 
         await ctx.send("Please enter the full madlib title in quotes, like this:\n`$play \"The Babysitter\"`")
 
-    else: #play specific madlib
+    #play specific madlib
+    else: 
         if args[0] not in TEMPLATES.keys(): #invalid title
             await ctx.send("Please enter a valid madlib title. Use `$list` to see all of the available madlibs.")
 
         else: #valid title
             await playMadlib(args[0])
 
-
+#TODO: maybe update embed instead of full delete and redo?
 @bot.command(name='list')
 async def list_titles(ctx):
     """list titles of all madlibs"""
@@ -146,7 +145,7 @@ async def list_titles(ctx):
         return user != discord.Member.bot and (str(reaction) == "⬅️" or str(reaction) == "➡️")
 
     async def listEmbed(pagenum):
-        titles = pages[pagenum]
+        titles = pages[pagenum].capwords()
         embed = discord.Embed(title="Available Madlibs:", description="\n".join(titles), colour=discord.Colour.blue())
         embed.set_footer(text="Page " + str(pagenum+1) + "/" + str(len(pages)))
 

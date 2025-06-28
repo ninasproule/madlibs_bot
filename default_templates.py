@@ -3,7 +3,7 @@ the_miner = "Once upon a time, a miner named Thabo worked in a big <PLACE>. Ever
 wedding_vows = "I, <MOVIE-CHARACTER-NAME>, choose you, <TV-CHARACTER-NAME>, to be my spouse for life. Together, we’ll face the ups and <PLURAL-DIRECTION>, always by each other’s side. I offer you my <BODY-PART> and <BODY-ORGAN> as a safe haven filled with love and <NOUN>. I promise to stay <ADJECTIVE> and devoted to you. Like this never-ending <SHAPE>, my love for you will endure <AMOUNT-OF-TIME>. Just as this ring is made of <ADJECTIVE> material, my commitment to you will never <VERB>. With this ring, I <VERB> you."
 
 DEFAULT_TEMPLATES = {
-    "The Babysitter": the_babysitter,
-    "The Miner": the_miner,
-    "Wedding Vows": wedding_vows
+    "the babysitter": the_babysitter,
+    "the miner": the_miner,
+    "wedding vows": wedding_vows
 }
