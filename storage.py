@@ -1,11 +1,18 @@
 import json
+import os.path
 
 from default_templates import DEFAULT_TEMPLATES
 
+MADLIBS_FILEPATH = "madlibs.json"
+
 def save_data():
-    with open("madlibs.json", mode="w", encoding="utf-8") as write_file:
-        json.dump(DEFAULT_TEMPLATES, write_file)
+    with open(MADLIBS_FILEPATH, mode="w", encoding="utf-8") as f:
+        json.dump(DEFAULT_TEMPLATES, f)
 
 def get_data():
-    with open("madlibs.json", mode="r", encoding="utf-8") as read_file:
-        return json.load(read_file)
+    if os.path.isfile(MADLIBS_FILEPATH):
+        with open(MADLIBS_FILEPATH, mode="r", encoding="utf-8") as f:
+            return json.load(f)
+    else:
+        save_data()
+        return DEFAULT_TEMPLATES

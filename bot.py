@@ -10,9 +10,7 @@ from dotenv import load_dotenv
 from default_templates import DEFAULT_TEMPLATES
 from storage import get_data, save_data
 
-
-
-
+TEMPLATES = get_data()
 
 intents = discord.Intents.default()
 intents.message_content = True
