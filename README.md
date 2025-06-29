@@ -6,7 +6,7 @@ A discord bot for playing, and creating your own madlibs that others can play!
 
 - **Play MadLibs**: Choose from available templates or get a random one
 - **Create Custom Templates**: Make your own MadLib stories for others to enjoy
-- **Template Management**: Browse all available MadLibs with paginated lists
+- **Template Management**: Browse all available MadLibs with paged lists
 - **Interactive Gameplay**: Bot guides players through each word prompt
 - **Persistent Storage**: All custom templates are saved and persist between bot restarts
 - **User-Friendly Interface**: Rich Discord embeds for better user experience
@@ -21,7 +21,7 @@ A discord bot for playing, and creating your own madlibs that others can play!
 | `$cancel` | Cancel any running MadLib operations | `$cancel` |
 | `$help` | Display help message with all commands | `$help` |
 
-## Installation & Setup 🛠️
+## Installation & Setup
 
 ### Prerequisites
 - Python 3.8 or higher

@@ -259,7 +259,7 @@ async def help(ctx):
 
     embed.add_field(
         name=f"{PREFIX}list",
-        value="View all available madlib titles in a paginated list.",
+        value="View all available madlib titles in a paged list.",
         inline=False
     )
 
