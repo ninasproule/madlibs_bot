@@ -15,11 +15,11 @@ A discord bot for playing, and creating your own madlibs that others can play!
 
 | Command | Description | Usage |
 |---------|-------------|-------|
-| `$play [title]` | Play a MadLib (random if no title specified) | `$play` or `$play wedding vows` |
-| `$new` | Create a new MadLib template | `$new` |
-| `$list` | View all available MadLib titles | `$list` |
-| `$cancel` | Cancel any running MadLib operations | `$cancel` |
-| `$help` | Display help message with all commands | `$help` |
+| `&play [title]` | Play a MadLib (random if no title specified) | `&play` or `&play wedding vows` |
+| `&new` | Create a new MadLib template | `&new` |
+| `&list` | View all available MadLib titles | `&list` |
+| `&cancel` | Cancel any running MadLib operations | `&cancel` |
+| `&help` | Display help message with all commands | `&help` |
 
 ## Installation & Setup
 
@@ -71,13 +71,13 @@ python bot.py
 ## How to Play
 
 ### Playing a MadLib
-1. Use `$play` for a random MadLib or `$play [title]` for a specific one
+1. Use `&play` for a random MadLib or `&play [title]` for a specific one
 2. The bot will prompt you for different types of words (nouns, verbs, adjectives, etc.)
 3. Type your word when prompted
 4. Enjoy the hilarious results!
 
 ### Creating Your Own MadLib
-1. Use `$new` to start creating a template
+1. Use `&new` to start creating a template
 2. Choose option 1️⃣ to create or 2️⃣ to view instructions
 3. Write your story, using `<word type>` for blanks (e.g., `<noun>`, `<adjective>`, `<body part>`)
 4. Example: `"The <adjective> cat <verb (past-tense)> over the <noun>"`
@@ -101,7 +101,7 @@ madlibs_bot/
 
 - **Framework**: discord.py
 - **Python Version**: 3.8+
-- **Command Prefix**: `$`
+- **Command Prefix**: `&`
 - **Timeout**: 60 seconds for user responses
 
 ## Contributing
