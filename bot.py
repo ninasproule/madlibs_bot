@@ -29,6 +29,8 @@ bot = commands.Bot(command_prefix=PREFIX, intents=intents, help_command=None)
 @bot.event
 async def on_ready():
     print(f'{bot.user} has connected to Discord!')
+    game = discord.Game("your madlibs!\n$help to get started")
+    await bot.change_presence(status=discord.Status.idle, activity=game)
 
 
 @bot.command(name="new")
