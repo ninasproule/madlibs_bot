@@ -15,7 +15,7 @@ load_dotenv()
 
 TEMPLATES = get_data()
 TOKEN = os.getenv('DISCORD_TOKEN')
-PREFIX = '$'
+PREFIX = '&'
 CANCEL_WORD = PREFIX + "cancel"
 TIMEOUT_SECONDS = 60
 TITLES_PER_PAGE = 3
@@ -167,7 +167,7 @@ async def play(ctx, *args):
 
     #play specific madlib
     if not (args in TEMPLATES.keys()):
-        await ctx.send("Please enter a valid madlib title. Use `$list` to see all of the available madlibs.")
+        await ctx.send(f"Please enter a valid madlib title. Use `{PREFIX}list` to see all of the available madlibs.")
 
     else:
         await play_madlib(args)
