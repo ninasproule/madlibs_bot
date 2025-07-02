@@ -18,7 +18,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 PREFIX = '&'
 CANCEL_WORD = PREFIX + "cancel"
 TIMEOUT_SECONDS = 60
-TITLES_PER_PAGE = 3
+TITLES_PER_PAGE = 8
 
 
 intents = discord.Intents.default()
